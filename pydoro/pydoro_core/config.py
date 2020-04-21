@@ -31,18 +31,19 @@ class Configuration:
         )
         parser.add_argument("--no-clock", help="hides clock", action="store_true")
         parser.add_argument("--no-sound", help="mutes all sounds", action="store_true")
+        parser.add_argument("--no-stats", help="turns off statistics collecting", action="store_true")
         self.cli_args = parser.parse_args()
 
     def _ini_parse(self):
         """
         Parse configuration file
-        Look at PYDORO_CONFIG_FILE environment variable
-        Defaults to ~/.pydoro.ini if PYDORO_CONFIG_FILE not set
+        Look at PYDORO_PATH/pydoro.ini environment variable
+        Defaults to ~/.pydoro/pydoro.ini if PYDORO_PATH not set
         """
         self._conf = configparser.ConfigParser()
 
         filename = os.environ.get(
-            "PYDORO_CONFIG_FILE", os.path.expanduser("~/.pydoro.ini")
+            "PYDORO_PATH", os.path.expanduser("~/.pydoro/pydoro.ini")
         )
 
         if os.path.exists(filename):
@@ -53,7 +54,7 @@ class Configuration:
     def _create_default_ini(self):
         """
         Creates default ini configuration file
-        Saves it in '~/.pydoro.ini'
+        Saves it in '~/.pydoro/pydoro.ini'
         """
         self._conf["DEFAULT"] = {}
 
@@ -61,6 +62,7 @@ class Configuration:
         self._conf["General"]["no_clock"] = "False"
         self._conf["General"]["no_sound"] = "False"
         self._conf["General"]["emoji"] = "False"
+        self._conf["General"]["no_stats"] = "False"
 
         self._conf["Time"] = {}
         self._conf["Time"]["tomatoes_per_set"] = "4"
@@ -78,7 +80,19 @@ class Configuration:
         self._conf["KeyBindings"]["reset"] = "r"
         self._conf["KeyBindings"]["reset_all"] = "a"
 
-        filename = os.path.expanduser("~/.pydoro.ini")
+        # Ideas for stats configs, none of these are used for now
+        self._conf["Stats"] = {}
+        self._conf["Stats"]["total_sets"] = "0"
+        self._conf["Stats"]["finished_sets"] = "0"
+        self._conf["Stats"]["unfinished_sets"] = "0"
+        self._conf["Stats"]["finished_tomatoes"] = "0"
+        self._conf["Stats"]["unfinished_tomatoes"] = "0"
+        self._conf["Stats"]["total_work_time"] = "0"
+
+        # If directory doesn't exist, create
+        os.makedirs("~/.pydoro/", exist_ok=True)
+
+        filename = os.path.expanduser("~/.pydoro/pydoro.ini")
         with open(filename, "w+") as configfile:
             self._conf.write(configfile)
 
@@ -91,6 +105,7 @@ class Configuration:
         self.no_clock = self._conf["General"]["no_clock"] == "True"
         self.no_sound = self._conf["General"]["no_sound"] == "True"
         self.emoji = self._conf["General"]["emoji"] == "True"
+        self.no_stats = self._conf["General"]["no_stats"] == "True"
         self.tomatoes_per_set = int(self._conf["Time"]["tomatoes_per_set"])
         self.work_minutes = float(self._conf["Time"]["work_minutes"])
         self.small_break_minutes = float(self._conf["Time"]["small_break_minutes"])
@@ -107,3 +122,4 @@ class Configuration:
         self.no_clock = self.cli_args.no_clock or self.cli_args.focus or self.no_clock
         self.no_sound = self.cli_args.no_sound or self.cli_args.focus or self.no_sound
         self.emoji = self.cli_args.emoji or self.emoji
+        self.no_stats = self.cli_args.no_stats or self.cli_args.focus or self.no_stats
