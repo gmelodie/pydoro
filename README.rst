@@ -50,6 +50,16 @@ Usage 📖
 
 **Options:** Use `--no-sound` to mute alarms, `--no-clock` to hide the clock or `--focus` for both clock hiding and sound muting
 
+Configurations
+------------------
+Pydoro comes with a configuration file (`pydoro.ini`) that by default is in the `~/.pydoro/` directory. If you want to change the path of the configurations directory you can do so by setting the `PYDORO_PATH` environment variable, simply add the following line to your `.bashrc` file (or `.zshrc`, etc.):
+
+```
+export PYDORO_PATH=/path/for/your/pydoro/config/dir
+```
+
+The first time you run Pydoro it will create this file with some default values. You can change them as you like.
+
 Credits 🙇‍♂️
 ------------------
 * Pomodoro - Invented by Francesco Cirillo
