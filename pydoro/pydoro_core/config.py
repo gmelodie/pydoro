@@ -31,7 +31,7 @@ class Configuration:
         )
         parser.add_argument("--no-clock", help="hides clock", action="store_true")
         parser.add_argument("--no-sound", help="mutes all sounds", action="store_true")
-        parser.add_argument("--no-stats", help="turns off statistics collecting", action="store_true")
+        parser.add_argument("--collect-stats", help="enables statistics collecting", action="store_true")
         self.cli_args = parser.parse_args()
 
     def _ini_parse(self):
@@ -62,7 +62,7 @@ class Configuration:
         self._conf["General"]["no_clock"] = "False"
         self._conf["General"]["no_sound"] = "False"
         self._conf["General"]["emoji"] = "False"
-        self._conf["General"]["no_stats"] = "False"
+        self._conf["General"]["collect_stats"] = "False"
 
         self._conf["Time"] = {}
         self._conf["Time"]["tomatoes_per_set"] = "4"
@@ -81,6 +81,7 @@ class Configuration:
         self._conf["KeyBindings"]["reset_all"] = "a"
 
         # Ideas for stats configs, none of these are used for now
+        # Specify what to collect
         self._conf["Stats"] = {}
         self._conf["Stats"]["total_sets"] = "0"
         self._conf["Stats"]["finished_sets"] = "0"
@@ -105,7 +106,7 @@ class Configuration:
         self.no_clock = self._conf["General"]["no_clock"] == "True"
         self.no_sound = self._conf["General"]["no_sound"] == "True"
         self.emoji = self._conf["General"]["emoji"] == "True"
-        self.no_stats = self._conf["General"]["no_stats"] == "True"
+        self.collect_stats = self._conf["General"]["collect_stats"] == "True"
         self.tomatoes_per_set = int(self._conf["Time"]["tomatoes_per_set"])
         self.work_minutes = float(self._conf["Time"]["work_minutes"])
         self.small_break_minutes = float(self._conf["Time"]["small_break_minutes"])
@@ -122,4 +123,4 @@ class Configuration:
         self.no_clock = self.cli_args.no_clock or self.cli_args.focus or self.no_clock
         self.no_sound = self.cli_args.no_sound or self.cli_args.focus or self.no_sound
         self.emoji = self.cli_args.emoji or self.emoji
-        self.no_stats = self.cli_args.no_stats or self.cli_args.focus or self.no_stats
+        self.collect_stats = self.cli_args.collect_stats or self.cli_args.focus or self.collect_stats
