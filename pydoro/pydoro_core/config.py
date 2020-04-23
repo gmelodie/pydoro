@@ -42,12 +42,13 @@ class Configuration:
         """
         self._conf = configparser.ConfigParser()
 
-        filename = os.environ.get(
-            "PYDORO_PATH", os.path.expanduser("~/.pydoro/pydoro.ini")
+        confdir = os.environ.get(
+            "PYDORO_PATH", os.path.expanduser("~/.pydoro/")
         )
 
-        if os.path.exists(filename):
-            self._conf.read(filename)
+        conffile = confdir + 'pydoro.ini'
+        if os.path.exists(conffile):
+            self._conf.read(conffile)
         else:
             self._create_default_ini()
 
@@ -80,18 +81,12 @@ class Configuration:
         self._conf["KeyBindings"]["reset"] = "r"
         self._conf["KeyBindings"]["reset_all"] = "a"
 
+        self._conf["Stats"] = {}
         # Ideas for stats configs, none of these are used for now
         # Specify what to collect
-        self._conf["Stats"] = {}
-        self._conf["Stats"]["total_sets"] = "0"
-        self._conf["Stats"]["finished_sets"] = "0"
-        self._conf["Stats"]["unfinished_sets"] = "0"
-        self._conf["Stats"]["finished_tomatoes"] = "0"
-        self._conf["Stats"]["unfinished_tomatoes"] = "0"
-        self._conf["Stats"]["total_work_time"] = "0"
 
         # If directory doesn't exist, create
-        os.makedirs("~/.pydoro/", exist_ok=True)
+        os.makedirs(os.path.expanduser("~/.pydoro/"), exist_ok=True)
 
         filename = os.path.expanduser("~/.pydoro/pydoro.ini")
         with open(filename, "w+") as configfile:
